@@ -4,9 +4,6 @@ class Filter {
   constructor() {
     this.container = document.querySelector(`.filter`);
 
-    this.input = document.createElement(`input`);
-    this.label = document.createElement(`label`);
-
     this.filtersProps = [
       {
         inputAttrs: {
@@ -14,8 +11,8 @@ class Filter {
           id: `filter__all`,
           class: `filter__input visually-hidden`,
           name: `filter`,
-          checked: true,
-          disabled: false,
+          isChecked: `checked`,
+          isDisabled: ``,
         },
         labelAttrs: {
           for: `filter__all`,
@@ -33,8 +30,8 @@ class Filter {
           id: `filter__overdue`,
           class: `filter__input visually-hidden`,
           name: `filter`,
-          checked: false,
-          disabled: true,
+          isChecked: ``,
+          isDisabled: `disabled`,
         },
         labelAttrs: {
           for: `filter__overdue`,
@@ -52,8 +49,8 @@ class Filter {
           id: `filter__today`,
           class: `filter__input visually-hidden`,
           name: `filter`,
-          checked: false,
-          disabled: true,
+          isChecked: ``,
+          isDisabled: `disabled`,
         },
         labelAttrs: {
           for: `filter__today`,
@@ -71,8 +68,8 @@ class Filter {
           id: `filter__favorites`,
           class: `filter__input visually-hidden`,
           name: `filter`,
-          checked: false,
-          disabled: false,
+          isChecked: ``,
+          isDisabled: ``,
         },
         labelAttrs: {
           for: `filter__favorites`,
@@ -90,8 +87,8 @@ class Filter {
           id: `filter__repeating`,
           class: `filter__input visually-hidden`,
           name: `filter`,
-          checked: false,
-          disabled: false,
+          isChecked: ``,
+          isDisabled: ``,
         },
         labelAttrs: {
           for: `filter__repeating`,
@@ -109,8 +106,8 @@ class Filter {
           id: `filter__tags`,
           class: `filter__input visually-hidden`,
           name: `filter`,
-          checked: false,
-          disabled: false,
+          isChecked: ``,
+          isDisabled: ``,
         },
         labelAttrs: {
           for: `filter__tags`,
@@ -128,8 +125,8 @@ class Filter {
           id: `filter__archive`,
           class: `filter__input visually-hidden`,
           name: `filter`,
-          checked: false,
-          disabled: false,
+          isChecked: ``,
+          isDisabled: ``,
         },
         labelAttrs: {
           for: `filter__archive`,
@@ -144,26 +141,32 @@ class Filter {
     ];
   }
 
-  setAttributes(el, attrs) {
-    for (let key in attrs) {
-      if (attrs.hasOwnProperty(key) && attrs[key] !== false) {
-        el.setAttribute(key, attrs[key]);
-      }
-    }
-  }
-
   render() {
     this.container.innerHTML = ``;
     this.fragment = document.createDocumentFragment();
+
     this.filtersProps.forEach((props) => {
-      const newInput = this.input.cloneNode(true);
-      this.setAttributes(newInput, props.inputAttrs);
-      const newLabel = this.label.cloneNode(true);
-      this.setAttributes(newLabel, props.labelAttrs);
-      newLabel.innerHTML = `${props.labelText}<span ${props.spanAttrs}>${props.spanText}</span>`;
-      this.fragment.appendChild(newInput);
-      this.fragment.appendChild(newLabel);
+      const newElement = document.createElement(`template`);
+      newElement.innerHTML = `
+        <input 
+          type=${props.inputAttrs.type} 
+          id=${props.inputAttrs.id} 
+          class=${props.inputAttrs.class} 
+          name=${props.inputAttrs.name}  
+          ${props.inputAttrs.isChecked}
+          ${props.inputAttrs.isDisabled}
+        />
+        <label 
+          for=${props.labelAttrs.for}
+          class=${props.labelAttrs.class}
+        >
+          ${props.labelText}
+          <span class=${props.spanAttrs.class}>${props.spanText}</span>
+        </label>
+      `;
+      this.fragment.appendChild(newElement.content);
     });
+
     this.container.appendChild(this.fragment);
   }
 
