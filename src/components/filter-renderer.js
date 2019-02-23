@@ -1,3 +1,5 @@
+import filtersProps from '../mock/filters-data';
+
 function renderFilter() {
   let container = document.querySelector(`.filter`);
 
@@ -8,15 +10,15 @@ function renderFilter() {
   filtersProps.forEach((props) => {
     const newElement = document.createElement(`template`);
     newElement.innerHTML = `
-        <input 
-          type=${props.inputAttrs.type} 
+        <input
+          type=${props.inputAttrs.type}
           id=${props.inputAttrs.id}
-          class=${props.inputAttrs.class} 
-          name=${props.inputAttrs.name}  
+          class=${props.inputAttrs.class}
+          name=${props.inputAttrs.name}
           ${props.inputAttrs.isChecked}
           ${props.inputAttrs.isDisabled}
         />
-        <label 
+        <label
           for=${props.labelAttrs.for}
           class=${props.labelAttrs.class}
         >
