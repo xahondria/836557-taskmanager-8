@@ -1,4 +1,4 @@
-import filtersProps from '../mock/filters-data';
+import DATA from '../mock/filters-data';
 
 function renderFilter() {
   let container = document.querySelector(`.filter`);
@@ -7,23 +7,25 @@ function renderFilter() {
 
   const fragment = document.createDocumentFragment();
 
-  filtersProps.forEach((props) => {
+  DATA.forEach((props) => {
     const newElement = document.createElement(`template`);
     newElement.innerHTML = `
         <input
-          type=${props.inputAttrs.type}
-          id=${props.inputAttrs.id}
-          class=${props.inputAttrs.class}
-          name=${props.inputAttrs.name}
-          ${props.inputAttrs.isChecked}
-          ${props.inputAttrs.isDisabled}
+          type="radio"
+          id=${props.id}
+          class="filter__input visually-hidden"
+          name="filter"
+          ${props.isChecked}
+          ${props.isDisabled}
         />
         <label
-          for=${props.labelAttrs.for}
-          class=${props.labelAttrs.class}
+          for=${props.id}
+          class="filter__label"
         >
-          ${props.labelText}
-          <span class=${props.spanAttrs.class}>${props.spanText}</span>
+          ${props.filterName}
+          <span class="${props.id}-count">
+            ${props.amountOfElements}
+          </span>
         </label>
       `;
     fragment.appendChild(newElement.content);
