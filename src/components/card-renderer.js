@@ -1,12 +1,36 @@
-function renderCard() {
-  const container = document.querySelector(`.board__tasks`);
-  container.innerHTML = ``;
+import DATA from "../mock/cards-data";
 
-  const fragment = document.createDocumentFragment();
+class CardRenderer {
 
-  const newElement = document.createElement(`template`);
-  newElement.innerHTML = `
-          <article class="card card--blue">
+  renderHashtag(props) {
+    return props.map((el) => `
+                          <span class="card__hashtag-inner">
+                            <input
+                              type="hidden"
+                              name="hashtag"
+                              value="repeat"
+                              class="card__hashtag-hidden-input"
+                            />
+                            <button type="button" class="card__hashtag-name">
+                              #${el}
+                            </button>
+                            <button type="button" class="card__hashtag-delete">
+                              delete
+                            </button>
+                          </span>
+                      `).join``;
+  }
+
+  render() {
+    const container = document.querySelector(`.board__tasks`);
+    container.innerHTML = ``;
+
+    const fragment = document.createDocumentFragment();
+
+    DATA.forEach((props) => {
+      const newElement = document.createElement(`template`);
+      newElement.innerHTML = `
+    <article class="card card--${props.color}">
             <form class="card__form" method="get">
               <div class="card__inner">
                 <div class="card__control">
@@ -36,7 +60,7 @@ function renderCard() {
                       class="card__text"
                       placeholder="Start typing your text here..."
                       name="text"
-                    ></textarea>
+                    >${props.title}</textarea>
                   </label>
                 </div>
 
@@ -151,52 +175,8 @@ function renderCard() {
 
                     <div class="card__hashtag">
                       <div class="card__hashtag-list">
-                        <span class="card__hashtag-inner">
-                          <input
-                            type="hidden"
-                            name="hashtag"
-                            value="repeat"
-                            class="card__hashtag-hidden-input"
-                          />
-                          <button type="button" class="card__hashtag-name">
-                            #repeat
-                          </button>
-                          <button type="button" class="card__hashtag-delete">
-                            delete
-                          </button>
-                        </span>
-
-                        <span class="card__hashtag-inner">
-                          <input
-                            type="hidden"
-                            name="hashtag"
-                            value="repeat"
-                            class="card__hashtag-hidden-input"
-                          />
-                          <button type="button" class="card__hashtag-name">
-                            #cinema
-                          </button>
-                          <button type="button" class="card__hashtag-delete">
-                            delete
-                          </button>
-                        </span>
-
-                        <span class="card__hashtag-inner">
-                          <input
-                            type="hidden"
-                            name="hashtag"
-                            value="repeat"
-                            class="card__hashtag-hidden-input"
-                          />
-                          <button type="button" class="card__hashtag-name">
-                            #entertaiment
-                          </button>
-                          <button type="button" class="card__hashtag-delete">
-                            delete
-                          </button>
-                        </span>
+                        ${this.renderHashtag(props.tags)}
                       </div>
-
                       <label>
                         <input
                           type="text"
@@ -207,15 +187,14 @@ function renderCard() {
                       </label>
                     </div>
                   </div>
-
-                  <label class="card__img-wrap card__img-wrap--empty">
+                  <label class="card__img-wrap">
                     <input
                       type="file"
                       class="card__img-input visually-hidden"
                       name="img"
                     />
                     <img
-                      src="img/add-photo.svg"
+                      src=${props.picture}
                       alt="task picture"
                       class="card__img"
                     />
@@ -297,9 +276,14 @@ function renderCard() {
             </form>
           </article>
       `;
-  fragment.appendChild(newElement.content);
+      fragment.appendChild(newElement.content);
+    });
 
-  container.appendChild(fragment);
+
+    container.appendChild(fragment);
+  }
+
 }
 
-export default renderCard;
+const cardRenderer = new CardRenderer();
+export default cardRenderer;
