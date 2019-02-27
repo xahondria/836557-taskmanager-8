@@ -41,14 +41,14 @@ class Card {
     this.picture = `http://picsum.photos/100/100?r=${Math.random()}`;
     this.color = DATA.colors[utils.getRandomInt(DATA.colors.length - 1)];
     this.repeatingDays = this.setRepeatingDays();
-    this.isFavorite = Math.floor(Math.random() * 5) === 4;
-    this.isDone = Math.floor(Math.random() * 2) === 1;
+    this.isFavorite = utils.getRandomInt(4) === 0;
+    this.isDone = utils.getRandomInt(1) === 0;
   }
 
   setRepeatingDays() {
     for (let prop in DATA.days) {
       if (DATA.days.hasOwnProperty(prop)) {
-        DATA.days[prop] = utils.getRandomInt(5) === 5;
+        DATA.days[prop] = utils.getRandomInt(5) === 0;
       }
     }
   }
