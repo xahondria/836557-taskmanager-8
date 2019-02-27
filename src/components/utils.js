@@ -3,7 +3,7 @@ class Utils {
     return Math.floor(Math.random() * (max + 1));
   }
 
-  getRandomEltsFromArray(arr, newArrMaxLength) {
+  getRandomElementsFromArray(arr, newArrMaxLength) {
     arr = arr.slice();
     let newArr = [];
     const newArrLength = this.getRandomInt(newArrMaxLength);
