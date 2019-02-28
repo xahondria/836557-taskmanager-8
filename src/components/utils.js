@@ -1,7 +1,7 @@
-class Utils {
+const Utils = {
   getRandomInt(max) {
     return Math.floor(Math.random() * (max + 1));
-  }
+  },
 
   getRandomElementsFromArray(arr, newArrMaxLength) {
     arr = arr.slice();
@@ -14,9 +14,8 @@ class Utils {
     }
 
     return newArr;
-  }
-}
+  },
+};
 
-const utils = new Utils();
 
-export default utils;
+export default Utils;
