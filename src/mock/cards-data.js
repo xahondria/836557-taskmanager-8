@@ -37,7 +37,7 @@ class Card {
   constructor() {
     this.title = DATA.titleList[Utils.getRandomInt(2)];
     this.dueDate = Date.now() + Utils.getRandomInt(DATA.DAYS_DISPERSION) * DATA.DAY_TO_MS_RATE;
-    this.tags = Utils.getRandomElementsFromArray([...DATA.tagsList], 3);
+    this.tags = Utils.getRandomElementsFromArray([...DATA.tagsList], Utils.getRandomInt(3));
     this.picture = `http://picsum.photos/100/100?r=${Math.random()}`;
     this.color = DATA.colors[Utils.getRandomInt(DATA.colors.length - 1)];
     this.repeatingDays = this.setRepeatingDays();
