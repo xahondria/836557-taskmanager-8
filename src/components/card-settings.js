@@ -1,72 +1,7 @@
-import DATA from "../mock/cards-data";
+import cardHashtags from "./card-hashtags";
 
-class CardRenderer {
-
-  renderHashtags(props) {
-    return props.map((el) => `
-      <span class="card__hashtag-inner">
-        <input
-          type="hidden"
-          name="hashtag"
-          value="repeat"
-          class="card__hashtag-hidden-input"
-        />
-        <button type="button" class="card__hashtag-name">
-          #${el}
-        </button>
-        <button type="button" class="card__hashtag-delete">
-          delete
-        </button>
-      </span>
-    `)
-      .join``;
-  }
-
-  renderCardControls() {
-    return `
-      <div class="card__control">
-        <button type="button" class="card__btn card__btn--edit">
-          edit
-        </button>
-        <button type="button" class="card__btn card__btn--archive">
-          archive
-        </button>
-        <button
-          type="button"
-          class="card__btn card__btn--favorites card__btn--disabled"
-        >
-          favorites
-        </button>
-      </div>    
-    `;
-  }
-
-  renderCardColorBar() {
-    return `
-      <div class="card__color-bar">
-        <svg class="card__color-bar-wave" width="100%" height="10">
-          <use xlink:href="#wave"></use>
-        </svg>
-      </div>
-    `;
-  }
-
-  renderCardText(props) {
-    return `
-      <div class="card__textarea-wrap">
-        <label>
-          <textarea
-            class="card__text"
-            placeholder="Start typing your text here..."
-            name="text"
-          >${props}</textarea>
-        </label>
-      </div>
-    `;
-  }
-
-  renderCardSettings(props) {
-    return `
+function cardSettings(props) {
+  return `
       <div class="card__settings">
         <div class="card__details">
           <div class="card__dates">
@@ -178,7 +113,7 @@ class CardRenderer {
 
           <div class="card__hashtag">
             <div class="card__hashtag-list">
-              ${this.renderHashtags(props.tags)}
+              ${cardHashtags(props.tags)}
             </div>
             <label>
               <input
@@ -271,46 +206,6 @@ class CardRenderer {
         </div>
       </div>
     `;
-  }
-
-  renderCardStatusBtns() {
-    return `
-      <div class="card__status-btns">
-        <button class="card__save" type="submit">save</button>
-        <button class="card__delete" type="button">delete</button>
-      </div>
-    `;
-  }
-
-  render() {
-    const container = document.querySelector(`.board__tasks`);
-    container.innerHTML = ``;
-
-    const fragment = document.createDocumentFragment();
-
-    DATA.forEach((props) => {
-      const newElement = document.createElement(`template`);
-      newElement.innerHTML = `
-        <article class="card card--${props.color}">
-          <form class="card__form" method="get">
-            <div class="card__inner">
-              ${this.renderCardControls()}
-              ${this.renderCardColorBar()}
-              ${this.renderCardText(props.title)}
-              ${this.renderCardSettings(props)}
-              ${this.renderCardStatusBtns()}
-            </div>
-          </form>
-        </article>
-      `;
-      fragment.appendChild(newElement.content);
-    });
-
-
-    container.appendChild(fragment);
-  }
-
 }
 
-const cardRenderer = new CardRenderer();
-export default cardRenderer;
+export default cardSettings;

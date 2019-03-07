@@ -1,4 +1,4 @@
-const Utils = {
+const utils = {
   getRandomInt(max) {
     return Math.floor(Math.random() * (max + 1));
   },
@@ -21,6 +21,13 @@ const Utils = {
 
     return newArr;
   },
+
+  renderElements(container, elements) {
+    elements.map((el) => {
+      container.insertAdjacentHTML(`beforeend`, el);
+    });
+
+  },
 };
 
-export default Utils;
+export default utils;

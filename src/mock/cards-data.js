@@ -1,4 +1,4 @@
-import Utils from "../components/utils";
+import utils from "../utils";
 
 const DATA = {
   titleList: [
@@ -35,20 +35,20 @@ const DATA = {
 
 class Card {
   constructor() {
-    this.title = DATA.titleList[Utils.getRandomInt(2)];
-    this.dueDate = Date.now() + Utils.getRandomInt(DATA.DAYS_DISPERSION) * DATA.DAY_TO_MS_RATE;
-    this.tags = Utils.getRandomElementsFromArray([...DATA.tagsList], Utils.getRandomInt(3));
+    this.title = DATA.titleList[utils.getRandomInt(2)];
+    this.dueDate = Date.now() + utils.getRandomInt(DATA.DAYS_DISPERSION) * DATA.DAY_TO_MS_RATE;
+    this.tags = utils.getRandomElementsFromArray([...DATA.tagsList], utils.getRandomInt(3));
     this.picture = `http://picsum.photos/100/100?r=${Math.random()}`;
-    this.color = DATA.colors[Utils.getRandomInt(DATA.colors.length - 1)];
+    this.color = DATA.colors[utils.getRandomInt(DATA.colors.length - 1)];
     this.repeatingDays = this.setRepeatingDays();
-    this.isFavorite = Utils.getRandomInt(4) === 0;
-    this.isDone = Utils.getRandomInt(1) === 0;
+    this.isFavorite = utils.getRandomInt(4) === 0;
+    this.isDone = utils.getRandomInt(1) === 0;
   }
 
   setRepeatingDays() {
     for (let prop in DATA.days) {
       if (DATA.days.hasOwnProperty(prop)) {
-        DATA.days[prop] = Utils.getRandomInt(5) === 0;
+        DATA.days[prop] = utils.getRandomInt(5) === 0;
       }
     }
   }
