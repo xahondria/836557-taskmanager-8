@@ -23,7 +23,7 @@ const DATA = {
     `pink`,
   ],
   days: {
-    Mo: 123,
+    Mo: false,
     Tu: false,
     We: false,
     Th: false,
@@ -33,33 +33,28 @@ const DATA = {
   },
 };
 
-class Card {
-  constructor() {
-    this.title = DATA.titleList[utils.getRandomInt(2)];
-    this.dueDate = Date.now() + utils.getRandomInt(DATA.DAYS_DISPERSION) * DATA.DAY_TO_MS_RATE;
-    this.tags = utils.getRandomElementsFromArray([...DATA.tagsList], utils.getRandomInt(3));
-    this.picture = `http://picsum.photos/100/100?r=${Math.random()}`;
-    this.color = DATA.colors[utils.getRandomInt(DATA.colors.length - 1)];
-    this.repeatingDays = this.setRepeatingDays();
-    this.isFavorite = utils.getRandomInt(4) === 0;
-    this.isDone = utils.getRandomInt(1) === 0;
-  }
-
-  setRepeatingDays() {
-    for (let prop in DATA.days) {
-      if (DATA.days.hasOwnProperty(prop)) {
-        DATA.days[prop] = utils.getRandomInt(5) === 0;
-      }
+function generateRepeatingDays() {
+  for (let prop in DATA.days) {
+    if (DATA.days.hasOwnProperty(prop)) {
+      DATA.days[prop] = utils.getRandomInt(5) === 0;
     }
   }
+  return DATA.days;
 }
 
+function generateCardData() {
+  return {
+    title: DATA.titleList[utils.getRandomInt(2)],
+    dueDate: Date.now() + utils.getRandomInt(DATA.DAYS_DISPERSION) * DATA.DAY_TO_MS_RATE,
+    tags: utils.getRandomElementsFromArray([...DATA.tagsList], utils.getRandomInt(3)),
+    picture: `http://picsum.photos/100/100?r=${Math.random()}`,
+    color: DATA.colors[utils.getRandomInt(DATA.colors.length - 1)],
+    repeatingDays: generateRepeatingDays(),
+    isFavorite: utils.getRandomInt(4) === 0,
+    isDone: utils.getRandomInt(1) === 0,
+  };
+}
 
-const CARDS_DATA = [
-  new Card(),
-  new Card(),
-  new Card(),
-  new Card(),
-];
+const CARDS_DATA = [...Array(4)].map(generateCardData);
 
 export default CARDS_DATA;
