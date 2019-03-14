@@ -51,6 +51,7 @@ function generateCardData() {
     color: DATA.colors[utils.getRandomInt(DATA.colors.length - 1)],
     repeatingDays: generateRepeatingDays(),
     isFavorite: utils.getRandomInt(4) === 0,
+    isArchived: false,
     isDone: utils.getRandomInt(1) === 0,
   };
 }

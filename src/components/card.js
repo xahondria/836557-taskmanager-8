@@ -19,6 +19,7 @@ class Card extends Component {
       color: data.color,
       repeatingDays: data.repeatingDays,
       isFavorite: data.isFavorite,
+      isArchived: data.isArchived,
       isDone: data.isDone,
     };
   }
@@ -45,7 +46,8 @@ class Card extends Component {
   }
 
   bind() {
-    this._fragment.querySelector(`.card__btn--edit`).addEventListener(`click`, this._onEditButtonClick.bind(this));
+    this._fragment.querySelector(`.card__btn--edit`)
+      .addEventListener(`click`, this._onEditButtonClick.bind(this));
   }
 }
 

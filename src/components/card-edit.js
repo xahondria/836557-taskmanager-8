@@ -13,13 +13,14 @@ class CardEdit extends Component {
       color: data.color,
       repeatingDays: data.repeatingDays,
       isFavorite: data.isFavorite,
+      isArchived: data.isArchived,
       isDone: data.isDone,
     };
   }
 
   get template() {
     return `
-          <article class="card card--edit card--black">
+      <article class="card card--edit card--${this._state.color}">
         <form class="card__form" method="get">
           <div class="card__inner">
             <div class="card__control">
@@ -269,6 +270,26 @@ class CardEdit extends Component {
     `.trim();
   }
 
+  _onArchivedButtonClick(ev) {
+    ev.preventDefault();
+    this._state.isArchived = !this._state.isArchived;
+  }
+
+  _onFavoritesButtonClick(ev) {
+    ev.preventDefault();
+    this._state.isFavorite = !this._state.isFavorite;
+    if (ev.target.classList.contains(`card__btn--disabled`)) {
+      ev.target.classList.remove(`card__btn--disabled`);
+    } else {
+      ev.target.classList.add(`card__btn--disabled`);
+    }
+  }
+
+  _onColorChange(ev) {
+    ev.preventDefault();
+    this._state.color = ev.target.value;
+  }
+
   _onTitleChange(ev) {
     ev.preventDefault();
     this._state.title = ev.target.value;
@@ -280,10 +301,20 @@ class CardEdit extends Component {
   }
 
   bind() {
+    this._fragment.querySelector(`.card__btn--edit`)
+      .addEventListener(`click`, this._onSubmitButtonClick.bind(this));
     this._fragment.querySelector(`.card__form`)
       .addEventListener(`submit`, this._onSubmitButtonClick.bind(this));
+    this._fragment.querySelector(`.card__btn--archive`)
+      .addEventListener(`click`, this._onArchivedButtonClick.bind(this));
+    this._fragment.querySelector(`.card__btn--favorites`)
+      .addEventListener(`click`, this._onFavoritesButtonClick.bind(this));
     this._fragment.querySelector(`.card__text`)
       .addEventListener(`input`, this._onTitleChange.bind(this));
+    this._fragment.querySelectorAll(`.card__color-input`)
+      .forEach((el) => {
+        el.addEventListener(`change`, this._onColorChange.bind(this));
+      });
   }
 }
 
