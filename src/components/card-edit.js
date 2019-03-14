@@ -1,8 +1,9 @@
-import utils from "../utils";
 import Card from "./card";
+import Component from "./component";
 
-class CardEdit {
+class CardEdit extends Component {
   constructor(data) {
+    super();
     this._fragment = null;
     this._state = {
       title: data.title,
@@ -283,12 +284,6 @@ class CardEdit {
       .addEventListener(`submit`, this._onSubmitButtonClick.bind(this));
     this._fragment.querySelector(`.card__text`)
       .addEventListener(`input`, this._onTitleChange.bind(this));
-  }
-
-  render() {
-    this._fragment = utils.createFragment(this.template);
-    this.bind();
-    return this._fragment;
   }
 }
 

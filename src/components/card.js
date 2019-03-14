@@ -3,11 +3,12 @@ import cardColorBar from "./card-color-bar";
 import cardTitle from "./card-title";
 import cardSettings from "./card-settings";
 import cardStatusBtns from "./card-status-btns";
-import utils from "../utils";
 import CardEdit from "./card-edit";
+import Component from "./component";
 
-class Card {
+class Card extends Component {
   constructor(data) {
+    super();
     this._fragment = null;
 
     this._state = {
@@ -45,12 +46,6 @@ class Card {
 
   bind() {
     this._fragment.querySelector(`.card__btn--edit`).addEventListener(`click`, this._onEditButtonClick.bind(this));
-  }
-
-  render() {
-    this._fragment = utils.createFragment(this.template);
-    this.bind();
-    return this._fragment;
   }
 }
 
