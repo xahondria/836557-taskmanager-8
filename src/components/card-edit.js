@@ -1,10 +1,19 @@
 import utils from "../utils";
 import Card from "./card";
-import CARDS_DATA from "../mock/cards-data";
 
 class CardEdit {
-  constructor() {
+  constructor(data) {
     this._fragment = null;
+    this._state = {
+      title: data.title,
+      dueDate: data.dueDate,
+      tags: data.tags,
+      picture: data.picture,
+      color: data.color,
+      repeatingDays: data.repeatingDays,
+      isFavorite: data.isFavorite,
+      isDone: data.isDone,
+    };
   }
 
   get template() {
@@ -259,14 +268,21 @@ class CardEdit {
     `.trim();
   }
 
+  _onTitleChange(ev) {
+    ev.preventDefault();
+    this._state.title = ev.target.value;
+  }
+
   _onSubmitButtonClick(ev) {
     ev.preventDefault();
-    ev.target.closest(`.card`).replaceWith(new Card(CARDS_DATA[0]).render());
+    ev.target.closest(`.card`).replaceWith(new Card(this._state).render());
   }
 
   bind() {
     this._fragment.querySelector(`.card__form`)
       .addEventListener(`submit`, this._onSubmitButtonClick.bind(this));
+    this._fragment.querySelector(`.card__text`)
+      .addEventListener(`input`, this._onTitleChange.bind(this));
   }
 
   render() {

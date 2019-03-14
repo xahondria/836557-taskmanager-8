@@ -40,7 +40,7 @@ class Card {
 
   _onEditButtonClick(ev) {
     ev.preventDefault();
-    ev.target.closest(`.card`).replaceWith(new CardEdit().render());
+    ev.target.closest(`.card`).replaceWith(new CardEdit(this._state).render());
   }
 
   bind() {
