@@ -1,15 +1,7 @@
-import DATA from '../mock/filters-data';
+import utils from "../utils";
 
-function renderFilter() {
-  let container = document.querySelector(`.filter`);
-
-  container.innerHTML = ``;
-
-  const fragment = document.createDocumentFragment();
-
-  DATA.forEach((props) => {
-    const newElement = document.createElement(`template`);
-    newElement.innerHTML = `
+function renderFilter(props) {
+  const template = `
         <input
           type="radio"
           id=${props.id}
@@ -27,11 +19,9 @@ function renderFilter() {
             ${props.amountOfElements}
           </span>
         </label>
-      `;
-    fragment.appendChild(newElement.content);
-  });
+      `.trim();
 
-  container.appendChild(fragment);
+  return utils.createFragment(template);
 }
 
 export default renderFilter;
