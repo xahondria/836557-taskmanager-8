@@ -1,9 +1,10 @@
-import utils from "../utils";
 import Card from "./card";
 import CARDS_DATA from "../mock/cards-data";
+import Component from "./component";
 
-class CardEdit {
+class CardEdit extends Component {
   constructor() {
+    super();
     this._fragment = null;
   }
 
@@ -267,12 +268,6 @@ class CardEdit {
   bind() {
     this._fragment.querySelector(`.card__form`)
       .addEventListener(`submit`, this._onSubmitButtonClick.bind(this));
-  }
-
-  render() {
-    this._fragment = utils.createFragment(this.template);
-    this.bind();
-    return this._fragment;
   }
 }
 
