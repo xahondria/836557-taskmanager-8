@@ -24,10 +24,13 @@ const utils = {
 
   renderElements(container, elements) {
     elements.map((el) => {
-      container.insertAdjacentHTML(`beforeend`, el);
+      container.appendChild(el);
     });
-
   },
+
+  createFragment(template) {
+    return document.createRange().createContextualFragment(template);
+  }
 };
 
 export default utils;

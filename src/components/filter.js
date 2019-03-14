@@ -1,5 +1,7 @@
+import utils from "../utils";
+
 function renderFilter(props) {
-  return `
+  const template = `
         <input
           type="radio"
           id=${props.id}
@@ -18,6 +20,8 @@ function renderFilter(props) {
           </span>
         </label>
       `.trim();
+
+  return utils.createFragment(template);
 }
 
 export default renderFilter;
