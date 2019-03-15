@@ -44,6 +44,7 @@ function generateRepeatingDays() {
 
 function generateCardData() {
   return {
+    id: utils.getRandomInt(2000),
     title: DATA.titleList[utils.getRandomInt(2)],
     dueDate: Date.now() + utils.getRandomInt(DATA.DAYS_DISPERSION) * DATA.DAY_TO_MS_RATE,
     tags: utils.getRandomElementsFromArray([...DATA.tagsList], utils.getRandomInt(3)),
@@ -56,6 +57,6 @@ function generateCardData() {
   };
 }
 
-const CARDS_DATA = [...Array(4)].map(generateCardData);
+const CARDS_DATA = [...Array(2)].map(generateCardData);
 
 export default CARDS_DATA;

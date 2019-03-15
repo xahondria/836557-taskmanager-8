@@ -5,6 +5,9 @@ class CardEdit extends Component {
   constructor(data) {
     super();
     this._fragment = null;
+    this._props = {
+      id: data.id,
+    };
     this._state = {
       title: data.title,
       dueDate: data.dueDate,
@@ -12,7 +15,8 @@ class CardEdit extends Component {
       picture: data.picture,
       color: data.color,
       repeatingDays: data.repeatingDays,
-      isDate: false,
+      isDate: data.isDate,
+      isRepeated: data.isRepeated,
       isFavorite: data.isFavorite,
       isArchived: data.isArchived,
       isDone: data.isDone,
@@ -33,7 +37,7 @@ class CardEdit extends Component {
               </button>
               <button
                 type="button"
-                class="card__btn card__btn--favorites card__btn--disabled"
+                class="card__btn card__btn--favorites card__btn--${this._state.isFavorite ? `` : `disabled`}"
               >
                 favorites
               </button>
@@ -62,7 +66,7 @@ class CardEdit extends Component {
                     date: <span class="card__date-status">${this._state.isDate ? `yes` : `no`}</span>
                   </button>
 
-                  <fieldset class="card__date-deadline" disabled>
+                  <fieldset class="card__date-deadline" ${this._state.isDate ? `` : `disabled`}>
                     <label class="card__input-deadline-wrap">
                       <input
                         class="card__date"
@@ -82,10 +86,10 @@ class CardEdit extends Component {
                   </fieldset>
 
                   <button class="card__repeat-toggle" type="button">
-                    repeat:<span class="card__repeat-status">no</span>
+                    repeat:<span class="card__repeat-status">${this._state.isRepeated ? `yes` : `no`}</span>
                   </button>
 
-                  <fieldset class="card__repeat-days" disabled>
+                  <fieldset class="card__repeat-days" ${this._state.isRepeated ? `` : `disabled`}>
                     <div class="card__repeat-days-inner">
                       <input
                         class="visually-hidden card__repeat-day-input"
@@ -93,6 +97,7 @@ class CardEdit extends Component {
                         id="repeat-mo-1"
                         name="repeat"
                         value="mo"
+                        ${this._state.repeatingDays.Mo && `checked`}
                       />
                       <label class="card__repeat-day" for="repeat-mo-1"
                       >mo</label
@@ -103,7 +108,7 @@ class CardEdit extends Component {
                         id="repeat-tu-1"
                         name="repeat"
                         value="tu"
-                        checked
+                        ${this._state.repeatingDays.Tu && `checked`}
                       />
                       <label class="card__repeat-day" for="repeat-tu-1"
                       >tu</label
@@ -114,6 +119,7 @@ class CardEdit extends Component {
                         id="repeat-we-1"
                         name="repeat"
                         value="we"
+                        ${this._state.repeatingDays.We && `checked`}
                       />
                       <label class="card__repeat-day" for="repeat-we-1"
                       >we</label
@@ -124,6 +130,7 @@ class CardEdit extends Component {
                         id="repeat-th-1"
                         name="repeat"
                         value="th"
+                        ${this._state.repeatingDays.Th && `checked`}
                       />
                       <label class="card__repeat-day" for="repeat-th-1"
                       >th</label
@@ -134,7 +141,7 @@ class CardEdit extends Component {
                         id="repeat-fr-1"
                         name="repeat"
                         value="fr"
-                        checked
+                        ${this._state.repeatingDays.Fr && `checked`}
                       />
                       <label class="card__repeat-day" for="repeat-fr-1"
                       >fr</label
@@ -145,6 +152,7 @@ class CardEdit extends Component {
                         name="repeat"
                         value="sa"
                         id="repeat-sa-1"
+                        ${this._state.repeatingDays.Sa && `checked`}
                       />
                       <label class="card__repeat-day" for="repeat-sa-1"
                       >sa</label
@@ -155,7 +163,7 @@ class CardEdit extends Component {
                         id="repeat-su-1"
                         name="repeat"
                         value="su"
-                        checked
+                        ${this._state.repeatingDays.Su && `checked`}
                       />
                       <label class="card__repeat-day" for="repeat-su-1"
                       >su</label
@@ -277,6 +285,10 @@ class CardEdit extends Component {
     `.trim();
   }
 
+  updateComponent(element) {
+    element.replaceWith(this.render());
+  }
+
   _onArchivedButtonClick(ev) {
     ev.preventDefault();
     this._state.isArchived = !this._state.isArchived;
@@ -285,27 +297,25 @@ class CardEdit extends Component {
   _onDateButtonClick(ev) {
     ev.preventDefault();
     this._state.isDate = !this._state.isDate;
-    const element = ev.target.closest(`.card`).querySelector(`.card__date-deadline`);
-    if (element.hasAttribute(`disabled`)) {
-      element.removeAttribute(`disabled`);
-    } else {
-      element.setAttribute(`disabled`, ``);
-    }
+    this.updateComponent(ev.target.closest(`.card`));
+  }
+
+  _onRepeatButtonClick(ev) {
+    ev.preventDefault();
+    this._state.isRepeated = !this._state.isRepeated;
+    this.updateComponent(ev.target.closest(`.card`));
   }
 
   _onFavoritesButtonClick(ev) {
     ev.preventDefault();
     this._state.isFavorite = !this._state.isFavorite;
-    if (ev.target.classList.contains(`card__btn--disabled`)) {
-      ev.target.classList.remove(`card__btn--disabled`);
-    } else {
-      ev.target.classList.add(`card__btn--disabled`);
-    }
+    this.updateComponent(ev.target.closest(`.card`));
   }
 
   _onColorChange(ev) {
     ev.preventDefault();
     this._state.color = ev.target.value;
+    this.updateComponent(ev.target.closest(`.card`));
   }
 
   _onTitleChange(ev) {
@@ -315,7 +325,8 @@ class CardEdit extends Component {
 
   _onSubmitButtonClick(ev) {
     ev.preventDefault();
-    ev.target.closest(`.card`).replaceWith(new Card(this._state).render());
+    const element = ev.target.closest(`.card`);
+    element.replaceWith(new Card(this._state).render());
   }
 
   bind() {
@@ -329,6 +340,8 @@ class CardEdit extends Component {
       .addEventListener(`click`, this._onFavoritesButtonClick.bind(this));
     this._fragment.querySelector(`.card__date-deadline-toggle`)
       .addEventListener(`click`, this._onDateButtonClick.bind(this));
+    this._fragment.querySelector(`.card__repeat-toggle`)
+      .addEventListener(`click`, this._onRepeatButtonClick.bind(this));
     this._fragment.querySelector(`.card__text`)
       .addEventListener(`input`, this._onTitleChange.bind(this));
     this._fragment.querySelector(`.card__colors-wrap`)

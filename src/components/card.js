@@ -10,7 +10,9 @@ class Card extends Component {
   constructor(data) {
     super();
     this._fragment = null;
-
+    this._props = {
+      id: data.id,
+    };
     this._state = {
       title: data.title,
       dueDate: data.dueDate,
@@ -18,7 +20,8 @@ class Card extends Component {
       picture: data.picture,
       color: data.color,
       repeatingDays: data.repeatingDays,
-      isDate: false,
+      isDate: data.isDate,
+      isRepeat: data.isRepeated,
       isFavorite: data.isFavorite,
       isArchived: data.isArchived,
       isDone: data.isDone,

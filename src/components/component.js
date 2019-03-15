@@ -17,6 +17,9 @@ class Component {
   bind() {
   }
 
+  updateComponent() {
+  }
+
   render() {
     this._fragment = utils.createFragment(this.template);
     this.bind();
