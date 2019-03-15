@@ -12,6 +12,7 @@ class CardEdit extends Component {
       picture: data.picture,
       color: data.color,
       repeatingDays: data.repeatingDays,
+      isDate: false,
       isFavorite: data.isFavorite,
       isArchived: data.isArchived,
       isDone: data.isDone,
@@ -39,7 +40,7 @@ class CardEdit extends Component {
             </div>
 
             <div class="card__color-bar">
-              <svg width="100%" height="10">
+              <svg class="card__color-bar-wave" width="100%" height="10">
                 <use xlink:href="#wave"></use>
               </svg>
             </div>
@@ -50,9 +51,7 @@ class CardEdit extends Component {
                       class="card__text"
                       placeholder="Start typing your text here..."
                       name="text"
-                    >
-                      This is example of new task, you can add picture, set date and time, add tags.</textarea
-                    >
+                    >${this._state.title}</textarea>
               </label>
             </div>
 
@@ -60,7 +59,7 @@ class CardEdit extends Component {
               <div class="card__details">
                 <div class="card__dates">
                   <button class="card__date-deadline-toggle" type="button">
-                    date: <span class="card__date-status">no</span>
+                    date: <span class="card__date-status">${this._state.isDate ? `yes` : `no`}</span>
                   </button>
 
                   <fieldset class="card__date-deadline" disabled>
@@ -201,7 +200,7 @@ class CardEdit extends Component {
                     class="card__color-input card__color-input--black visually-hidden"
                     name="color"
                     value="black"
-                    checked
+                    ${this._state.color === `black` ? `checked` : ``}
                   />
                   <label
                     for="color-black-1"
@@ -214,6 +213,8 @@ class CardEdit extends Component {
                     class="card__color-input card__color-input--yellow visually-hidden"
                     name="color"
                     value="yellow"
+                    ${this._state.color === `yellow` ? `checked` : ``}
+
                   />
                   <label
                     for="color-yellow-1"
@@ -226,6 +227,8 @@ class CardEdit extends Component {
                     class="card__color-input card__color-input--blue visually-hidden"
                     name="color"
                     value="blue"
+                    ${this._state.color === `blue` ? `checked` : ``}
+
                   />
                   <label
                     for="color-blue-1"
@@ -238,6 +241,8 @@ class CardEdit extends Component {
                     class="card__color-input card__color-input--green visually-hidden"
                     name="color"
                     value="green"
+                    ${this._state.color === `green` ? `checked` : ``}
+
                   />
                   <label
                     for="color-green-1"
@@ -250,6 +255,8 @@ class CardEdit extends Component {
                     class="card__color-input card__color-input--pink visually-hidden"
                     name="color"
                     value="pink"
+                    ${this._state.color === `pink` ? `checked` : ``}
+
                   />
                   <label
                     for="color-pink-1"
@@ -273,6 +280,17 @@ class CardEdit extends Component {
   _onArchivedButtonClick(ev) {
     ev.preventDefault();
     this._state.isArchived = !this._state.isArchived;
+  }
+
+  _onDateButtonClick(ev) {
+    ev.preventDefault();
+    this._state.isDate = !this._state.isDate;
+    const element = ev.target.closest(`.card`).querySelector(`.card__date-deadline`);
+    if (element.hasAttribute(`disabled`)) {
+      element.removeAttribute(`disabled`);
+    } else {
+      element.setAttribute(`disabled`, ``);
+    }
   }
 
   _onFavoritesButtonClick(ev) {
@@ -309,12 +327,12 @@ class CardEdit extends Component {
       .addEventListener(`click`, this._onArchivedButtonClick.bind(this));
     this._fragment.querySelector(`.card__btn--favorites`)
       .addEventListener(`click`, this._onFavoritesButtonClick.bind(this));
+    this._fragment.querySelector(`.card__date-deadline-toggle`)
+      .addEventListener(`click`, this._onDateButtonClick.bind(this));
     this._fragment.querySelector(`.card__text`)
       .addEventListener(`input`, this._onTitleChange.bind(this));
-    this._fragment.querySelectorAll(`.card__color-input`)
-      .forEach((el) => {
-        el.addEventListener(`change`, this._onColorChange.bind(this));
-      });
+    this._fragment.querySelector(`.card__colors-wrap`)
+      .addEventListener(`change`, this._onColorChange.bind(this));
   }
 }
 

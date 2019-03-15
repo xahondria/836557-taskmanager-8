@@ -18,6 +18,7 @@ class Card extends Component {
       picture: data.picture,
       color: data.color,
       repeatingDays: data.repeatingDays,
+      isDate: false,
       isFavorite: data.isFavorite,
       isArchived: data.isArchived,
       isDone: data.isDone,
