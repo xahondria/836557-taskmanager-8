@@ -1,3 +1,4 @@
+import flatpickr from "flatpickr";
 import Card from "./card";
 import Component from "./component";
 
@@ -5,6 +6,8 @@ class CardEdit extends Component {
   constructor(data) {
     super();
     this._fragment = null;
+    this.calendar = null;
+    this.cardTime = null;
     this._props = {
       id: data.id,
     };
@@ -14,13 +17,21 @@ class CardEdit extends Component {
       tags: data.tags,
       picture: data.picture,
       color: data.color,
-      repeatingDays: data.repeatingDays,
+      repeatingDays: Object.assign({}, data.repeatingDays),
       isDate: data.isDate,
       isRepeated: data.isRepeated,
       isFavorite: data.isFavorite,
       isArchived: data.isArchived,
       isDone: data.isDone,
     };
+
+    this._onSubmitButtonClick = this._onSubmitButtonClick.bind(this);
+    this._onArchivedButtonClick = this._onArchivedButtonClick.bind(this);
+    this._onFavoritesButtonClick = this._onFavoritesButtonClick.bind(this);
+    this._onDateButtonClick = this._onDateButtonClick.bind(this);
+    this._onRepeatButtonClick = this._onRepeatButtonClick.bind(this);
+    this._onColorChange = this._onColorChange.bind(this);
+    this._onRepeatingDaysChange = this._onRepeatingDaysChange.bind(this);
   }
 
   get template() {
@@ -318,7 +329,30 @@ class CardEdit extends Component {
     this.updateComponent(ev.target.closest(`.card`));
   }
 
+  _onRepeatingDaysChange(ev) {
+    ev.preventDefault();
+    this._state.repeatingDays[ev.target.value] = !this._state.repeatingDays[ev.target.value];
+  }
+
+  _onTitleChange(ev) {
+    ev.preventDefault();
+    this._state.title = ev.target.value;
+  }
+
+  destroyFlatpickr() {
+    if (this.calendar) {
+      this.calendar.destroy();
+      this.cardTime.destroy();
+    }
+  }
+
   createCardEditMapper(target) {
+    for (const day in target.repeatingDays) {
+      if (target.repeatingDays.hasOwnProperty(day)) {
+        target.repeatingDays[day] = false;
+      }
+    }
+
     return {
       'text': (value) => {
         target.title = value;
@@ -357,23 +391,45 @@ class CardEdit extends Component {
     const element = ev.target.closest(`.card`);
     this._getFormData(element);
     element.replaceWith(new Card(this._state).render());
+    this.destroyFlatpickr();
   }
 
   bind() {
     this._fragment.querySelector(`.card__btn--edit`)
-      .addEventListener(`click`, this._onSubmitButtonClick.bind(this));
+      .addEventListener(`click`, this._onSubmitButtonClick);
     this._fragment.querySelector(`.card__form`)
-      .addEventListener(`submit`, this._onSubmitButtonClick.bind(this));
+      .addEventListener(`submit`, this._onSubmitButtonClick);
     this._fragment.querySelector(`.card__btn--archive`)
-      .addEventListener(`click`, this._onArchivedButtonClick.bind(this));
+      .addEventListener(`click`, this._onArchivedButtonClick);
     this._fragment.querySelector(`.card__btn--favorites`)
-      .addEventListener(`click`, this._onFavoritesButtonClick.bind(this));
+      .addEventListener(`click`, this._onFavoritesButtonClick);
     this._fragment.querySelector(`.card__date-deadline-toggle`)
-      .addEventListener(`click`, this._onDateButtonClick.bind(this));
+      .addEventListener(`click`, this._onDateButtonClick);
     this._fragment.querySelector(`.card__repeat-toggle`)
-      .addEventListener(`click`, this._onRepeatButtonClick.bind(this));
+      .addEventListener(`click`, this._onRepeatButtonClick);
+    this._fragment.querySelector(`.card__text`)
+      .addEventListener(`input`, this._onTitleChange.bind(this));
     this._fragment.querySelector(`.card__colors-wrap`)
-      .addEventListener(`change`, this._onColorChange.bind(this));
+      .addEventListener(`change`, this._onColorChange);
+    this._fragment.querySelector(`.card__repeat-days-inner`)
+      .addEventListener(`change`, this._onRepeatingDaysChange);
+
+    if (this._state.isDate) {
+      this.calendar = flatpickr(this._fragment.querySelector(`.card__date`), {
+        altInput: true,
+        altFormat: `j F`,
+        dateFormat: `j F`,
+      });
+      this.cardTime = flatpickr(this._fragment.querySelector(`.card__time`), {
+        enableTime: true,
+        noCalendar: true,
+        altInput: true,
+        altFormat: `h:i K`,
+        dateFormat: `h:i K`,
+      });
+    } else {
+      this.destroyFlatpickr();
+    }
   }
 }
 
