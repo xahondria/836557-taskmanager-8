@@ -30,6 +30,7 @@ class CardEdit extends Component {
     this._onFavoritesButtonClick = this._onFavoritesButtonClick.bind(this);
     this._onDateButtonClick = this._onDateButtonClick.bind(this);
     this._onRepeatButtonClick = this._onRepeatButtonClick.bind(this);
+    this._onTitleChange = this._onTitleChange.bind(this);
     this._onColorChange = this._onColorChange.bind(this);
     this._onRepeatingDaysChange = this._onRepeatingDaysChange.bind(this);
   }
@@ -408,7 +409,7 @@ class CardEdit extends Component {
     this._fragment.querySelector(`.card__repeat-toggle`)
       .addEventListener(`click`, this._onRepeatButtonClick);
     this._fragment.querySelector(`.card__text`)
-      .addEventListener(`input`, this._onTitleChange.bind(this));
+      .addEventListener(`input`, this._onTitleChange);
     this._fragment.querySelector(`.card__colors-wrap`)
       .addEventListener(`change`, this._onColorChange);
     this._fragment.querySelector(`.card__repeat-days-inner`)
