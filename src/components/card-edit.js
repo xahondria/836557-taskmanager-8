@@ -97,7 +97,7 @@ class CardEdit extends Component {
                         id="repeat-mo-1"
                         name="repeat"
                         value="mo"
-                        ${this._state.repeatingDays.Mo && `checked`}
+                        ${this._state.repeatingDays.mo && `checked`}
                       />
                       <label class="card__repeat-day" for="repeat-mo-1"
                       >mo</label
@@ -108,7 +108,7 @@ class CardEdit extends Component {
                         id="repeat-tu-1"
                         name="repeat"
                         value="tu"
-                        ${this._state.repeatingDays.Tu && `checked`}
+                        ${this._state.repeatingDays.tu && `checked`}
                       />
                       <label class="card__repeat-day" for="repeat-tu-1"
                       >tu</label
@@ -119,7 +119,7 @@ class CardEdit extends Component {
                         id="repeat-we-1"
                         name="repeat"
                         value="we"
-                        ${this._state.repeatingDays.We && `checked`}
+                        ${this._state.repeatingDays.we && `checked`}
                       />
                       <label class="card__repeat-day" for="repeat-we-1"
                       >we</label
@@ -130,7 +130,7 @@ class CardEdit extends Component {
                         id="repeat-th-1"
                         name="repeat"
                         value="th"
-                        ${this._state.repeatingDays.Th && `checked`}
+                        ${this._state.repeatingDays.th && `checked`}
                       />
                       <label class="card__repeat-day" for="repeat-th-1"
                       >th</label
@@ -141,7 +141,7 @@ class CardEdit extends Component {
                         id="repeat-fr-1"
                         name="repeat"
                         value="fr"
-                        ${this._state.repeatingDays.Fr && `checked`}
+                        ${this._state.repeatingDays.fr && `checked`}
                       />
                       <label class="card__repeat-day" for="repeat-fr-1"
                       >fr</label
@@ -152,7 +152,7 @@ class CardEdit extends Component {
                         name="repeat"
                         value="sa"
                         id="repeat-sa-1"
-                        ${this._state.repeatingDays.Sa && `checked`}
+                        ${this._state.repeatingDays.sa && `checked`}
                       />
                       <label class="card__repeat-day" for="repeat-sa-1"
                       >sa</label
@@ -163,7 +163,7 @@ class CardEdit extends Component {
                         id="repeat-su-1"
                         name="repeat"
                         value="su"
-                        ${this._state.repeatingDays.Su && `checked`}
+                        ${this._state.repeatingDays.su && `checked`}
                       />
                       <label class="card__repeat-day" for="repeat-su-1"
                       >su</label
@@ -318,14 +318,44 @@ class CardEdit extends Component {
     this.updateComponent(ev.target.closest(`.card`));
   }
 
-  _onTitleChange(ev) {
-    ev.preventDefault();
-    this._state.title = ev.target.value;
+  createCardEditMapper(target) {
+    return {
+      'text': (value) => {
+        target.title = value;
+      },
+      'repeat': (value) => {
+        target.repeatingDays[value] = true;
+      },
+
+      'hashtag-input': (value) => {
+        if (value) {
+          target.tags = target.tags.concat(value.split(` `));
+        }
+      },
+
+      'color': (value) => {
+        target.color = value;
+      },
+    };
+  }
+
+  _getFormData(form) {
+    const formData = new FormData(form.querySelector(`.card__form`));
+
+    const cardEditMapper = this.createCardEditMapper(this._state);
+
+    for (const pair of formData.entries()) {
+      const [property, value] = pair;
+      if (cardEditMapper[property]) {
+        cardEditMapper[property](value);
+      }
+    }
   }
 
   _onSubmitButtonClick(ev) {
     ev.preventDefault();
     const element = ev.target.closest(`.card`);
+    this._getFormData(element);
     element.replaceWith(new Card(this._state).render());
   }
 
@@ -342,8 +372,6 @@ class CardEdit extends Component {
       .addEventListener(`click`, this._onDateButtonClick.bind(this));
     this._fragment.querySelector(`.card__repeat-toggle`)
       .addEventListener(`click`, this._onRepeatButtonClick.bind(this));
-    this._fragment.querySelector(`.card__text`)
-      .addEventListener(`input`, this._onTitleChange.bind(this));
     this._fragment.querySelector(`.card__colors-wrap`)
       .addEventListener(`change`, this._onColorChange.bind(this));
   }
