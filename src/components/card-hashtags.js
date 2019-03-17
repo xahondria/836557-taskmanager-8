@@ -1,5 +1,5 @@
 function cardHashtags(props) {
-  return props.map((el) => `
+  return Array.from(props, ((el) => `
       <span class="card__hashtag-inner">
         <input
           type="hidden"
@@ -14,7 +14,7 @@ function cardHashtags(props) {
           delete
         </button>
       </span>
-    `)
+    `))
     .join``;
 }
 

@@ -48,7 +48,7 @@ function generateCardData() {
     title: DATA.titleList[utils.getRandomInt(2)],
     dueDate: Date.now() + utils.getRandomInt(DATA.DAYS_DISPERSION) * DATA.DAY_TO_MS_RATE,
     archivedDate: null,
-    tags: [...utils.getRandomElementsFromArray([...DATA.tagsList], utils.getRandomInt(3))],
+    tags: new Set([...utils.getRandomElementsFromArray([...DATA.tagsList], utils.getRandomInt(3))]),
     picture: `http://picsum.photos/100/100?r=${Math.random()}`,
     color: DATA.colors[utils.getRandomInt(DATA.colors.length - 1)],
     repeatingDays: generateRepeatingDays(),

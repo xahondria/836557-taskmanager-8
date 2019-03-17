@@ -1,6 +1,7 @@
 import flatpickr from "flatpickr";
 import Card from "./card";
 import Component from "./component";
+import cardHashtags from "./card-hashtags";
 
 class CardEdit extends Component {
   constructor(data) {
@@ -31,6 +32,7 @@ class CardEdit extends Component {
     this._onFavoritesButtonClick = this._onFavoritesButtonClick.bind(this);
     this._onDateButtonClick = this._onDateButtonClick.bind(this);
     this._onRepeatButtonClick = this._onRepeatButtonClick.bind(this);
+    this._onHashtagDeleteButtonClick = this._onHashtagDeleteButtonClick.bind(this);
     this._onTitleChange = this._onTitleChange.bind(this);
     this._onColorChange = this._onColorChange.bind(this);
     this._onRepeatingDaysChange = this._onRepeatingDaysChange.bind(this);
@@ -186,7 +188,9 @@ class CardEdit extends Component {
                 </div>
 
                 <div class="card__hashtag">
-                  <div class="card__hashtag-list"></div>
+                  <div class="card__hashtag-list">
+                    ${cardHashtags(this._state.tags)}
+                  </div>
 
                   <label>
                     <input
@@ -323,6 +327,19 @@ class CardEdit extends Component {
     this.updateComponent(ev.target.closest(`.card`));
   }
 
+  _onHashtagDeleteButtonClick(ev) {
+    if (ev.target.classList.contains(`card__hashtag-delete`)) {
+      ev.preventDefault();
+      const hashTagText = ev.target.parentNode
+        .querySelector(`.card__hashtag-name`).innerText
+        .substring(1);
+      if (this._state.tags.has(hashTagText)) {
+        this._state.tags.delete(hashTagText);
+      }
+      ev.target.closest(`.card__hashtag-inner`).remove();
+    }
+  }
+
   _onColorChange(ev) {
     ev.preventDefault();
     this._state.color = ev.target.value;
@@ -363,7 +380,10 @@ class CardEdit extends Component {
 
       'hashtag-input': (value) => {
         if (value) {
-          target.tags = target.tags.concat(value.split(` `));
+          const newTags = value.split(` `);
+          newTags.forEach((tag) => {
+            target.tags = target.tags.add(tag);
+          });
         }
       },
 
@@ -407,6 +427,8 @@ class CardEdit extends Component {
       .addEventListener(`click`, this._onDateButtonClick);
     this._fragment.querySelector(`.card__repeat-toggle`)
       .addEventListener(`click`, this._onRepeatButtonClick);
+    this._fragment.querySelector(`.card__hashtag-list`)
+      .addEventListener(`click`, this._onHashtagDeleteButtonClick);
     this._fragment.querySelector(`.card__text`)
       .addEventListener(`input`, this._onTitleChange);
     this._fragment.querySelector(`.card__colors-wrap`)
