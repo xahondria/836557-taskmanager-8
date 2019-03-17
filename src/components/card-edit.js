@@ -14,6 +14,7 @@ class CardEdit extends Component {
     this._state = {
       title: data.title,
       dueDate: data.dueDate,
+      archivedDate: data.archivedDate,
       tags: data.tags,
       picture: data.picture,
       color: data.color,
@@ -297,13 +298,11 @@ class CardEdit extends Component {
     `.trim();
   }
 
-  updateComponent(element) {
-    element.replaceWith(this.render());
-  }
-
   _onArchivedButtonClick(ev) {
     ev.preventDefault();
     this._state.isArchived = !this._state.isArchived;
+    this._state.archivedDate = this._state.isArchived ? Date.now() : null;
+    this.updateComponent(ev.target.closest(`.card`));
   }
 
   _onDateButtonClick(ev) {

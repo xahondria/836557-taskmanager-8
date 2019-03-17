@@ -17,7 +17,8 @@ class Component {
   bind() {
   }
 
-  updateComponent() {
+  updateComponent(element) {
+    element.replaceWith(this.render());
   }
 
   render() {
