@@ -23,13 +23,13 @@ const DATA = {
     `pink`,
   ],
   days: {
-    Mo: false,
-    Tu: false,
-    We: false,
-    Th: false,
-    Fr: false,
-    Sa: false,
-    Su: false,
+    mo: false,
+    tu: false,
+    we: false,
+    th: false,
+    fr: false,
+    sa: false,
+    su: false,
   },
 };
 
@@ -44,17 +44,20 @@ function generateRepeatingDays() {
 
 function generateCardData() {
   return {
+    id: utils.getRandomInt(2000),
     title: DATA.titleList[utils.getRandomInt(2)],
     dueDate: Date.now() + utils.getRandomInt(DATA.DAYS_DISPERSION) * DATA.DAY_TO_MS_RATE,
-    tags: utils.getRandomElementsFromArray([...DATA.tagsList], utils.getRandomInt(3)),
+    archivedDate: null,
+    tags: new Set([...utils.getRandomElementsFromArray([...DATA.tagsList], utils.getRandomInt(3))]),
     picture: `http://picsum.photos/100/100?r=${Math.random()}`,
     color: DATA.colors[utils.getRandomInt(DATA.colors.length - 1)],
     repeatingDays: generateRepeatingDays(),
     isFavorite: utils.getRandomInt(4) === 0,
+    isArchived: false,
     isDone: utils.getRandomInt(1) === 0,
   };
 }
 
-const CARDS_DATA = [...Array(4)].map(generateCardData);
+const CARDS_DATA = [...Array(2)].map(generateCardData);
 
 export default CARDS_DATA;

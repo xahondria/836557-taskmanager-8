@@ -1,16 +1,46 @@
+import flatpickr from "flatpickr";
 import Card from "./card";
-import CARDS_DATA from "../mock/cards-data";
 import Component from "./component";
+import cardHashtags from "./card-hashtags";
 
 class CardEdit extends Component {
-  constructor() {
+  constructor(data) {
     super();
     this._fragment = null;
+    this.calendar = null;
+    this.cardTime = null;
+    this._props = {
+      id: data.id,
+    };
+    this._state = {
+      title: data.title,
+      dueDate: data.dueDate,
+      archivedDate: data.archivedDate,
+      tags: data.tags,
+      picture: data.picture,
+      color: data.color,
+      repeatingDays: Object.assign({}, data.repeatingDays),
+      isDate: data.isDate,
+      isRepeated: data.isRepeated,
+      isFavorite: data.isFavorite,
+      isArchived: data.isArchived,
+      isDone: data.isDone,
+    };
+
+    this._onSubmitButtonClick = this._onSubmitButtonClick.bind(this);
+    this._onArchivedButtonClick = this._onArchivedButtonClick.bind(this);
+    this._onFavoritesButtonClick = this._onFavoritesButtonClick.bind(this);
+    this._onDateButtonClick = this._onDateButtonClick.bind(this);
+    this._onRepeatButtonClick = this._onRepeatButtonClick.bind(this);
+    this._onHashtagDeleteButtonClick = this._onHashtagDeleteButtonClick.bind(this);
+    this._onTitleChange = this._onTitleChange.bind(this);
+    this._onColorChange = this._onColorChange.bind(this);
+    this._onRepeatingDaysChange = this._onRepeatingDaysChange.bind(this);
   }
 
   get template() {
     return `
-          <article class="card card--edit card--black">
+      <article class="card card--edit card--${this._state.color}">
         <form class="card__form" method="get">
           <div class="card__inner">
             <div class="card__control">
@@ -22,14 +52,14 @@ class CardEdit extends Component {
               </button>
               <button
                 type="button"
-                class="card__btn card__btn--favorites card__btn--disabled"
+                class="card__btn card__btn--favorites card__btn--${this._state.isFavorite ? `` : `disabled`}"
               >
                 favorites
               </button>
             </div>
 
             <div class="card__color-bar">
-              <svg width="100%" height="10">
+              <svg class="card__color-bar-wave" width="100%" height="10">
                 <use xlink:href="#wave"></use>
               </svg>
             </div>
@@ -40,9 +70,7 @@ class CardEdit extends Component {
                       class="card__text"
                       placeholder="Start typing your text here..."
                       name="text"
-                    >
-                      This is example of new task, you can add picture, set date and time, add tags.</textarea
-                    >
+                    >${this._state.title}</textarea>
               </label>
             </div>
 
@@ -50,10 +78,10 @@ class CardEdit extends Component {
               <div class="card__details">
                 <div class="card__dates">
                   <button class="card__date-deadline-toggle" type="button">
-                    date: <span class="card__date-status">no</span>
+                    date: <span class="card__date-status">${this._state.isDate ? `yes` : `no`}</span>
                   </button>
 
-                  <fieldset class="card__date-deadline" disabled>
+                  <fieldset class="card__date-deadline" ${this._state.isDate ? `` : `disabled`}>
                     <label class="card__input-deadline-wrap">
                       <input
                         class="card__date"
@@ -73,10 +101,10 @@ class CardEdit extends Component {
                   </fieldset>
 
                   <button class="card__repeat-toggle" type="button">
-                    repeat:<span class="card__repeat-status">no</span>
+                    repeat:<span class="card__repeat-status">${this._state.isRepeated ? `yes` : `no`}</span>
                   </button>
 
-                  <fieldset class="card__repeat-days" disabled>
+                  <fieldset class="card__repeat-days" ${this._state.isRepeated ? `` : `disabled`}>
                     <div class="card__repeat-days-inner">
                       <input
                         class="visually-hidden card__repeat-day-input"
@@ -84,6 +112,7 @@ class CardEdit extends Component {
                         id="repeat-mo-1"
                         name="repeat"
                         value="mo"
+                        ${this._state.repeatingDays.mo && `checked`}
                       />
                       <label class="card__repeat-day" for="repeat-mo-1"
                       >mo</label
@@ -94,7 +123,7 @@ class CardEdit extends Component {
                         id="repeat-tu-1"
                         name="repeat"
                         value="tu"
-                        checked
+                        ${this._state.repeatingDays.tu && `checked`}
                       />
                       <label class="card__repeat-day" for="repeat-tu-1"
                       >tu</label
@@ -105,6 +134,7 @@ class CardEdit extends Component {
                         id="repeat-we-1"
                         name="repeat"
                         value="we"
+                        ${this._state.repeatingDays.we && `checked`}
                       />
                       <label class="card__repeat-day" for="repeat-we-1"
                       >we</label
@@ -115,6 +145,7 @@ class CardEdit extends Component {
                         id="repeat-th-1"
                         name="repeat"
                         value="th"
+                        ${this._state.repeatingDays.th && `checked`}
                       />
                       <label class="card__repeat-day" for="repeat-th-1"
                       >th</label
@@ -125,7 +156,7 @@ class CardEdit extends Component {
                         id="repeat-fr-1"
                         name="repeat"
                         value="fr"
-                        checked
+                        ${this._state.repeatingDays.fr && `checked`}
                       />
                       <label class="card__repeat-day" for="repeat-fr-1"
                       >fr</label
@@ -136,6 +167,7 @@ class CardEdit extends Component {
                         name="repeat"
                         value="sa"
                         id="repeat-sa-1"
+                        ${this._state.repeatingDays.sa && `checked`}
                       />
                       <label class="card__repeat-day" for="repeat-sa-1"
                       >sa</label
@@ -146,7 +178,7 @@ class CardEdit extends Component {
                         id="repeat-su-1"
                         name="repeat"
                         value="su"
-                        checked
+                        ${this._state.repeatingDays.su && `checked`}
                       />
                       <label class="card__repeat-day" for="repeat-su-1"
                       >su</label
@@ -156,7 +188,9 @@ class CardEdit extends Component {
                 </div>
 
                 <div class="card__hashtag">
-                  <div class="card__hashtag-list"></div>
+                  <div class="card__hashtag-list">
+                    ${cardHashtags(this._state.tags)}
+                  </div>
 
                   <label>
                     <input
@@ -191,7 +225,7 @@ class CardEdit extends Component {
                     class="card__color-input card__color-input--black visually-hidden"
                     name="color"
                     value="black"
-                    checked
+                    ${this._state.color === `black` ? `checked` : ``}
                   />
                   <label
                     for="color-black-1"
@@ -204,6 +238,8 @@ class CardEdit extends Component {
                     class="card__color-input card__color-input--yellow visually-hidden"
                     name="color"
                     value="yellow"
+                    ${this._state.color === `yellow` ? `checked` : ``}
+
                   />
                   <label
                     for="color-yellow-1"
@@ -216,6 +252,8 @@ class CardEdit extends Component {
                     class="card__color-input card__color-input--blue visually-hidden"
                     name="color"
                     value="blue"
+                    ${this._state.color === `blue` ? `checked` : ``}
+
                   />
                   <label
                     for="color-blue-1"
@@ -228,6 +266,8 @@ class CardEdit extends Component {
                     class="card__color-input card__color-input--green visually-hidden"
                     name="color"
                     value="green"
+                    ${this._state.color === `green` ? `checked` : ``}
+
                   />
                   <label
                     for="color-green-1"
@@ -240,6 +280,8 @@ class CardEdit extends Component {
                     class="card__color-input card__color-input--pink visually-hidden"
                     name="color"
                     value="pink"
+                    ${this._state.color === `pink` ? `checked` : ``}
+
                   />
                   <label
                     for="color-pink-1"
@@ -260,14 +302,156 @@ class CardEdit extends Component {
     `.trim();
   }
 
+  _onArchivedButtonClick(ev) {
+    ev.preventDefault();
+    this._state.isArchived = !this._state.isArchived;
+    this._state.archivedDate = this._state.isArchived ? Date.now() : null;
+    this.updateComponent(ev.target.closest(`.card`));
+  }
+
+  _onDateButtonClick(ev) {
+    ev.preventDefault();
+    this._state.isDate = !this._state.isDate;
+    this.updateComponent(ev.target.closest(`.card`));
+  }
+
+  _onRepeatButtonClick(ev) {
+    ev.preventDefault();
+    this._state.isRepeated = !this._state.isRepeated;
+    this.updateComponent(ev.target.closest(`.card`));
+  }
+
+  _onFavoritesButtonClick(ev) {
+    ev.preventDefault();
+    this._state.isFavorite = !this._state.isFavorite;
+    this.updateComponent(ev.target.closest(`.card`));
+  }
+
+  _onHashtagDeleteButtonClick(ev) {
+    if (ev.target.classList.contains(`card__hashtag-delete`)) {
+      ev.preventDefault();
+      const hashTagText = ev.target.parentNode
+        .querySelector(`.card__hashtag-name`).innerText
+        .substring(1);
+      if (this._state.tags.has(hashTagText)) {
+        this._state.tags.delete(hashTagText);
+      }
+      ev.target.closest(`.card__hashtag-inner`).remove();
+    }
+  }
+
+  _onColorChange(ev) {
+    ev.preventDefault();
+    this._state.color = ev.target.value;
+    this.updateComponent(ev.target.closest(`.card`));
+  }
+
+  _onRepeatingDaysChange(ev) {
+    ev.preventDefault();
+    this._state.repeatingDays[ev.target.value] = !this._state.repeatingDays[ev.target.value];
+  }
+
+  _onTitleChange(ev) {
+    ev.preventDefault();
+    this._state.title = ev.target.value;
+  }
+
+  destroyFlatpickr() {
+    if (this.calendar) {
+      this.calendar.destroy();
+      this.cardTime.destroy();
+    }
+  }
+
+  createCardEditMapper(target) {
+    for (const day in target.repeatingDays) {
+      if (target.repeatingDays.hasOwnProperty(day)) {
+        target.repeatingDays[day] = false;
+      }
+    }
+
+    return {
+      'text': (value) => {
+        target.title = value;
+      },
+      'repeat': (value) => {
+        target.repeatingDays[value] = true;
+      },
+
+      'hashtag-input': (value) => {
+        if (value) {
+          const newTags = value.split(` `);
+          newTags.forEach((tag) => {
+            target.tags = target.tags.add(tag);
+          });
+        }
+      },
+
+      'color': (value) => {
+        target.color = value;
+      },
+    };
+  }
+
+  _getFormData(form) {
+    const formData = new FormData(form.querySelector(`.card__form`));
+
+    const cardEditMapper = this.createCardEditMapper(this._state);
+
+    for (const pair of formData.entries()) {
+      const [property, value] = pair;
+      if (cardEditMapper[property]) {
+        cardEditMapper[property](value);
+      }
+    }
+  }
+
   _onSubmitButtonClick(ev) {
     ev.preventDefault();
-    ev.target.closest(`.card`).replaceWith(new Card(CARDS_DATA[0]).render());
+    const element = ev.target.closest(`.card`);
+    this._getFormData(element);
+    element.replaceWith(new Card(this._state).render());
+    this.destroyFlatpickr();
   }
 
   bind() {
+    this._fragment.querySelector(`.card__btn--edit`)
+      .addEventListener(`click`, this._onSubmitButtonClick);
     this._fragment.querySelector(`.card__form`)
-      .addEventListener(`submit`, this._onSubmitButtonClick.bind(this));
+      .addEventListener(`submit`, this._onSubmitButtonClick);
+    this._fragment.querySelector(`.card__btn--archive`)
+      .addEventListener(`click`, this._onArchivedButtonClick);
+    this._fragment.querySelector(`.card__btn--favorites`)
+      .addEventListener(`click`, this._onFavoritesButtonClick);
+    this._fragment.querySelector(`.card__date-deadline-toggle`)
+      .addEventListener(`click`, this._onDateButtonClick);
+    this._fragment.querySelector(`.card__repeat-toggle`)
+      .addEventListener(`click`, this._onRepeatButtonClick);
+    this._fragment.querySelector(`.card__hashtag-list`)
+      .addEventListener(`click`, this._onHashtagDeleteButtonClick);
+    this._fragment.querySelector(`.card__text`)
+      .addEventListener(`input`, this._onTitleChange);
+    this._fragment.querySelector(`.card__colors-wrap`)
+      .addEventListener(`change`, this._onColorChange);
+    this._fragment.querySelector(`.card__repeat-days-inner`)
+      .addEventListener(`change`, this._onRepeatingDaysChange);
+
+    if (this._state.isDate) {
+      this.calendar = flatpickr(this._fragment.querySelector(`.card__date`), {
+        altInput: true,
+        altFormat: `j F`,
+        dateFormat: `j F`,
+      });
+      this.cardTime = flatpickr(this._fragment.querySelector(`.card__time`), {
+        enableTime: true,
+        noCalendar: true,
+        altInput: true,
+        altFormat: `h:i K`,
+        dateFormat: `h:i K`,
+      });
+    } else {
+      this.destroyFlatpickr();
+    }
   }
 }
 

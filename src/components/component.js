@@ -17,6 +17,10 @@ class Component {
   bind() {
   }
 
+  updateComponent(element) {
+    element.replaceWith(this.render());
+  }
+
   render() {
     this._fragment = utils.createFragment(this.template);
     this.bind();
